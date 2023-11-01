@@ -85,6 +85,10 @@ class Address(Field):
     pass
 
 
+class Email(Field):
+    pass
+
+
 class Birthday(Field):
 
     date_format = "%d.%m.%Y"
@@ -107,6 +111,7 @@ class Record:
         self.phone = None
         self.birthday = None
         self.address = None
+        self.email = None
 
     def add_phone(self, phone: str):
         """ Method for add phone
@@ -124,6 +129,9 @@ class Record:
     def add_address(self, address: str):
         self.address = Address(address)
 
+    def add_email(self, email: str):
+        self.email = Email(email)
+
     def edit_phone(self, phone: str):
         """ Method for edit phone number
         :param phone: phone in format +3***, or 323***
@@ -132,6 +140,9 @@ class Record:
 
     def edit_address(self, address: str):
         self.add_address(address)
+
+    def edit_email(self, email: str):
+        self.add_email(email)
 
     def get_phone(self):
         """ getter for phone number
@@ -149,6 +160,9 @@ class Record:
     
     def get_address(self):
         return self.address.value
+    
+    def get_email(self):
+        return self.email.value
 
     def __str__(self):
         birthday = ''
