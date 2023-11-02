@@ -220,6 +220,35 @@ def add_note(notes, name: str, text: str):
     pickle.save_notes(notes)
     return 'Note added'
 
+@input_error
+def add_tags(notes, name: str, tags: str):
+    notes.add_tags(name, tags)
+    pickle.save_notes(notes)
+    return 'Tags added'
+
+@input_error
+def find_note(notes, name: str):
+    return notes.find_note(name)
+
+@input_error
+def delete_note(notes, name: str):
+    notes.delete_note(name)
+    pickle.save_notes(notes)
+    return 'Tags added'
+
+@input_error
+def edit_note(notes, name: str, new_text: str):
+    notes.edit_note(name, new_text)
+    pickle.save_notes(notes)
+
+@input_error
+def find_notes_by_tag(notes, tag: str):
+    pass
+
+@input_error
+def sort_notes(notes):
+    pass
+
 
 @input_error
 def parse_input(user_input):
