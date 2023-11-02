@@ -135,7 +135,7 @@ def get_all(contacts):
     
 
 @input_error
-def add_address(contacts, name: str, address: str):
+def add_address(contacts, name: str, *args):
     """ Method for add Address
     :param contacts: Record
     :type contacts: class
@@ -146,10 +146,11 @@ def add_address(contacts, name: str, address: str):
     :return: Representation string of add
     :rtype: str
     """
+    address = ' '.join(args)
     contacts.data[name].add_address(address)
     pickle.save_contacts(contacts)
     return f"Address for {name} : {address} added"
-
+    
 
 @input_error
 def get_address(contacts, name: str):
@@ -165,7 +166,7 @@ def get_address(contacts, name: str):
 
 
 @input_error
-def change_address(contacts, name: str, address: str):
+def change_address(contacts, name: str, *args):
     """ Method for Change address
     :param contacts: Record
     :type contacts: class
@@ -176,6 +177,7 @@ def change_address(contacts, name: str, address: str):
     :return: Representation string for change
     :rtype: str
     """
+    address = ' '.join(args)
     contacts.data[name].add_address(address)
     pickle.save_contacts(contacts)
     return f"Address for {name} : {address} changed"
