@@ -13,6 +13,7 @@ from utils import Record
 from utils import Pickle
 from utils import CommandCompleter
 from utils import Commands
+from utils import Notes
 
 TELEPHONE_NUMBER_LEN = 10
 pickle = Pickle()
@@ -212,6 +213,12 @@ def birthdays(contacts):
             return "No birthdays on next week"
     else:
         return "Empty birthday list"
+    
+@input_error
+def add_note(notes, name: str, text: str):
+    notes.add_note(name, text)
+    pickle.save_notes(notes)
+    return 'Note added'
 
 
 @input_error
@@ -231,6 +238,7 @@ def main():
     """ Main method for execution, start point
     """
     contacts = pickle.read_contacts()
+    notes = pickle.read_notes()
     print("""Welcome to the assistant bot!
     Available commands:
         ° hello

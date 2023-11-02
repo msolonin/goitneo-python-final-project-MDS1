@@ -8,8 +8,8 @@ from collections import UserDict
 
 
 def input_error(func):
-    """Common wrapper for intercept all exceptions
-    """
+    """Common wrapper for intercept all exceptions"""
+
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -23,6 +23,7 @@ def input_error(func):
             return "Please add command"
         except Exception:
             print(f"Unexpected action: in def {func.__name__}()")
+
     return wrapper
 
 
@@ -51,7 +52,6 @@ class Address(Field):
 
 
 class Birthday(Field):
-
     date_format = "%d.%m.%Y"
 
     @property
@@ -64,7 +64,7 @@ class Birthday(Field):
             return datetime.strptime(date, Birthday.date_format).date()
         except Exception:
             return None
-        
+
 
 class Record:
     def __init__(self, name):
@@ -74,13 +74,13 @@ class Record:
         self.address = None
 
     def add_phone(self, phone: str):
-        """ Method for add phone
+        """Method for add phone
         :param phone: phone in format +3***, or 323***
         """
         self.phone = Phone(phone)
 
     def add_birthday(self, birthday: str):
-        """ Automatically convert it in datetime format
+        """Automatically convert it in datetime format
         :param birthday: Birthday date of user
         :type birthday: format str DD.MM.YYYY
         """
@@ -90,7 +90,7 @@ class Record:
         self.address = Address(address)
 
     def edit_phone(self, phone: str):
-        """ Method for edit phone number
+        """Method for edit phone number
         :param phone: phone in format +3***, or 323***
         """
         self.add_phone(phone)
@@ -99,33 +99,32 @@ class Record:
         self.add_address(address)
 
     def get_phone(self):
-        """ getter for phone number
+        """getter for phone number
         :return: phone number
         :rtype: str
         """
         return self.phone.value
 
     def get_birthday(self):
-        """ getter for birthday
+        """getter for birthday
         :return: birthday in format %d.%m.%Y
         :rtype: str
         """
         return self.birthday.value
-    
+
     def get_address(self):
         return self.address.value
 
     def __str__(self):
-        birthday = ''
+        birthday = ""
         if self.birthday:
             birthday = f" birthday: {str(self.birthday)}, "
         return f"Contact name: {self.name.value},{birthday} phone: {self.phone}"
 
 
 class Pickle:
-
-    NOTES = 'notes.pickle'
-    CONTACTS = 'contacts.pickle'
+    NOTES = "notes.pickle"
+    CONTACTS = "contacts.pickle"
 
     @staticmethod
     def save_to_file(file_name, data):
@@ -145,7 +144,9 @@ class Pickle:
         try:
             return self.read_from_file(self.NOTES)
         except FileNotFoundError:
-            return Notes()  # TODO: Class not exist, change name if it will be different name
+            return (
+                Notes()
+            )  # TODO: Class not exist, change name if it will be different name
 
     def save_contacts(self, data):
         self.save_to_file(self.CONTACTS, data)
@@ -157,8 +158,47 @@ class Pickle:
             return AddressBook()
 
 
-class CommandCompleter:
+class Notes(UserDict):
+    def add_note(self, name, text):
+        self.data[name] = {"text": text, "tags": []}
 
+    def add_tags(self, name, tags):
+        self.data[name]["tags"] += tags.split(" ")
+
+    def find_note(self, name):
+        if name in self.data:
+            return f"Note`s name: {name},\ntags: {' '.join(t for t in self.data[name]['tags'])};\ntext: {self.data[name]['text']}"
+
+    def delete_note(self, name):
+        if name in self.data:
+            del self.data[name]
+            return True
+        else:
+            return False
+
+    def edit_note(self, name, new_text):
+        if name in self.data:
+            self.data[name]["text"] = new_text
+            return True
+        else:
+            return False
+
+    def find_notes_by_tag(self, tag):
+        matching_notes = dict()
+        for name, data in self.data.items():
+            tags = data["tags"]
+            if tag in tags:
+                matching_notes[name] = data
+        return matching_notes
+
+    def sort_notes(self):
+        sorted_notes = sorted(
+            self.data.items(), key=lambda item: (-len(item[1]["tags"]), item[0])
+        )
+        return dict(sorted_notes)
+
+
+class CommandCompleter:
     def __init__(self, options):
         self.options = sorted(options)
         self.matches = []
@@ -177,58 +217,31 @@ class CommandCompleter:
         return response
 
 
-class Notes(UserDict):
-    def add_note(self, name, text):
-        self.data[name] = {'text': text,
-                           'tags': []}
-        
-    def add_tags(self, name, tags):
-        self.data[name]['tags'] += tags.split(' ')
-        
-    def find_note(self, name):
-        if name in self.data:
-            return f"Note`s name: {name},\ntags: {' '.join(t for t in self.data[name]['tags'])};\ntext: {self.data[name]['text']}"
-        
-    def remove_note(self, name):
-        if name in self.data:
-            del self.data[name]
-            return True
-        else:
-            return False
-        
-    def edit_note(self, name, new_text):
-        if name in self.data:
-            self.data[name]['text'] = new_text
-            return True
-        else:
-            return False
-    
-    def find_notes_by_tag(self, tag):
-        matching_notes = dict()
-        for name, data in self.data.items():
-            tags = data['tags']
-            if tag in tags:
-                matching_notes[name] = data
-        return matching_notes
-
 class Commands:
-    ADD = 'add'
-    CHANGE = 'change'
-    PHONE = 'phone'
-    ALL = 'all'
-    ADD_BIRTHDAY = 'add-birthday'
-    SHOW_BIRTHDAY = 'show-birthday'
-    BIRTHDAYS = 'birthdays'
-    ADD_ADDRESS = 'add-address'
-    SHOW_ADDRESS = 'show-address'
-    CHANGE_ADDRESS = 'change-address'
-    CLOSE = 'close'
-    EXIT = 'exit'
-    HELLO = 'hello'
+    ADD = "add"
+    CHANGE = "change"
+    PHONE = "phone"
+    ALL = "all"
+    ADD_BIRTHDAY = "add-birthday"
+    SHOW_BIRTHDAY = "show-birthday"
+    BIRTHDAYS = "birthdays"
+    ADD_ADDRESS = "add-address"
+    SHOW_ADDRESS = "show-address"
+    CHANGE_ADDRESS = "change-address"
+    CLOSE = "close"
+    EXIT = "exit"
+    HELLO = "hello"
+    ADD_NOTE = "add-note"
+    ADD_TAGS = "add-tags"
+    FIND_NOTE = "find-note"
+    DELETE_NOTE = "delete-note"
+    EDIT_NOTE = "edit-note"
+    FIND_NOTES_BY_TAGS = "find-by-tag"
+    SORT_NOTES = "show-sorted-notes"
 
     @classmethod
     def all_keys(cls):
-        return [_ for _ in dir(Commands) if not _.startswith('_') and _.isupper()]
+        return [_ for _ in dir(Commands) if not _.startswith("_") and _.isupper()]
 
     @classmethod
     def all_values(cls):
