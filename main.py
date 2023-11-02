@@ -221,7 +221,7 @@ def add_note(notes, name: str, text: str):
     return 'Note added'
 
 @input_error
-def add_tags(notes, name: str, tags: str):
+def add_tags(notes, name: str, tags):
     notes.add_tags(name, tags)
     pickle.save_notes(notes)
     return 'Tags added'
@@ -243,11 +243,15 @@ def edit_note(notes, name: str, new_text: str):
 
 @input_error
 def find_notes_by_tag(notes, tag: str):
-    pass
+    return notes.find_notes_by_tag(tag)
 
 @input_error
 def sort_notes(notes):
-    pass
+    for name, data in notes.sort_notes().items():
+        print(f"Note's name: {name}")
+        print(f"Tags: {', '.join(data['tags'])}")
+        print(f"Text: {data['text']}")
+        print() 
 
 
 @input_error
@@ -313,6 +317,20 @@ def main():
             print(get_address(contacts, *args))
         elif command == Commands.CHANGE_ADDRESS:
             print(change_address(contacts, *args))
+        elif command == Commands.ADD_NOTE:
+            print(add_note(notes, *args))
+        elif command == Commands.ADD_TAGS:
+            add_tags(notes, *args)
+        elif command == Commands.EDIT_NOTE:
+            edit_note(notes,*args)
+        elif command == Commands.FIND_NOTE:
+            print(find_note(notes,*args[0]))
+        elif command == Commands.DELETE_NOTE:
+            delete_note(notes,*args[0])
+        elif command == Commands.FIND_NOTES_BY_TAGS:
+            print(find_notes_by_tag(notes, *args))
+        elif command == Commands.SORT_NOTES:
+            sort_notes(notes)
         else:
             print("Invalid command.")
 
