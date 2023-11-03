@@ -142,8 +142,6 @@ def add_address(contacts, name: str, *args):
     :type contacts: class
     :param name: record name
     :type name: str
-    :param address: Address of contact
-    :type address: str
     :return: Representation string of add
     :rtype: str
     """
@@ -173,8 +171,6 @@ def change_address(contacts, name: str, *args):
     :type contacts: class
     :param name: record name
     :type name: str
-    :param address: Address of contact
-    :type address: str
     :return: Representation string for change
     :rtype: str
     """
