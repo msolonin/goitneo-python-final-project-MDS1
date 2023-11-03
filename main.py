@@ -481,6 +481,7 @@ def sort_notes(notes: Notes):
         print(f"Text: {data['text']}\n")
 
 
+@input_error
 def upcoming_birthday(contacts: AddressBook, n_of_days: str):
     """ Method to show all birthdays in n days if exist
     :return: names of users who has birthday in n days
@@ -490,13 +491,15 @@ def upcoming_birthday(contacts: AddressBook, n_of_days: str):
     today = datetime.today().date()
     days = timedelta(days=int(n_of_days))
     upcoming_birthdays = today + days
-    if contacts.data:
+
+    if contacts:
         birthdays_on_that_day = []
-        for user in contacts.data.values():
-            birthday = user.birthday.date_object
-            birthday_this_year = birthday.replace(year=today.year)
-            if upcoming_birthdays == birthday_this_year:
-                birthdays_on_that_day.append(str(user.name))
+        for user in contacts.values():
+            if hasattr(user, 'birthday') and user.birthday is not None:
+                birthday = user.birthday.date_object
+                birthday_this_year = birthday.replace(year=today.year)
+                if upcoming_birthdays == birthday_this_year:
+                    birthdays_on_that_day.append(str(user.name))
 
         if birthdays_on_that_day:
             formatted_date = upcoming_birthdays.strftime("%d.%m.%Y")
@@ -537,7 +540,7 @@ def main():
         ° add-birthday <name> <birthday(in format DD.MM.YYYY)>
         ° show-birthday <name>        
         ° birthdays
-        ° upcoming_birthday <number_of_days>
+        ° upcoming-birthday <number_of_days>
         ° add-address <name> <address>
         ° show-address <name>
         ° change-address <name> <new address>
